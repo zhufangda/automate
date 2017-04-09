@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<session>
+  <automate id="ma01">
+    <etats>
+      <etat initial="Yes" nom="1"/>
+      <etat final="Yes" nom="4"/>
+      <etat nom="3"/>
+      <etat nom="2"/>
+    </etats>
+    <transitions>
+      <trans deb="4" label="b" fin="2"/>
+      <trans deb="3" label="b" fin="4"/>
+      <trans deb="1" label="a" fin="2"/>
+      <trans deb="3" label="a" fin="3"/>
+      <trans deb="2" label="a" fin="4"/>
+      <trans deb="1" label="a" fin="3"/>
+    </transitions>
+  </automate>
+</session>
