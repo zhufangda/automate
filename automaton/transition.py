@@ -21,22 +21,13 @@ class Transition(object):
         
     def getEtat(self,etatSrc,label):
         """ get end state by the start state and the symbole """
-        resultat = set()
-        for x in self.__application:
-            if etatSrc==x[0] and label==x[1] :
-                if isinstance(x[2],str):
-                    resultat.add(x[2])
-                else:
-                    resultat = resultat | set(x[2])
-            
-        return resultat
-
-    
+        return set([x[2] for x in self.__application if etatSrc==x[0] and label==x[1]])
+                 
     def getTransition(self,start=None,symbol=None,end = None):
         """ get end state by the given arguments """
         if start == None:
             startSet = self.__application.copy()
-        elif isinstance(start, Iterable):
+        elif isinstance(start, set):
             startSet = set([ trans for trans in self.__application 
                             for state in start if trans[0] == state])
         else:
@@ -45,7 +36,7 @@ class Transition(object):
         
         if symbol == None:
             symbolSet = self.__application.copy()
-        elif isinstance(symbol, Iterable) and symbol != '':
+        elif isinstance(symbol, set) and symbol != '':
             symbolSet = set([ trans for trans in self.__application 
                             for lettre in symbol if trans[1] == lettre])
         else:
@@ -54,7 +45,7 @@ class Transition(object):
         
         if end == None:
             endSet = self.__application.copy()
-        elif isinstance(end, Iterable):
+        elif isinstance(end, set):
             endSet = set([ trans for trans in self.__application 
                             for state in end if trans[2] ==state])
         else:

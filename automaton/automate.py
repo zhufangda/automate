@@ -12,6 +12,7 @@ import exception as excep
 import transition
 import warnings
 from lxml import etree
+import copy
 
 class Automate(object):
     __slots__ = ('__identify',
@@ -68,9 +69,9 @@ class Automate(object):
     def add_transition(self, start, symbol, end, replace = False):
         """add a given state to the automaton"""
         if start not in self.__etats:
-            raise excep.StateNotFound("Can not add a transition on lettre '%s' that"
-                                " starts in a undefined start state '%s'"
-                                % (symbol, start))
+            raise excep.StateNotFound("Can not add a transition ('%s','%s','%s')"
+                                " because starts in a undefined start state '%s'"
+                                % (start,symbol, end,start))
         if end not in self.__etats:
             raise excep.StateNotFound("Can not add a transition on lettre '%s' that"
                                 " starts in a undefined end state '%s'"
@@ -108,20 +109,32 @@ class Automate(object):
         """add a given symbol to the automaton"""
         self.__alphabet.add(symbol)
         return symbol 
-    
+    def remove_stateUseless(self):
+        for state in list(self.__etats):
+            if state != self.__etat_init and len(self.__trans.getTransition(end = state))<1:
+                 self.remove_state(state)
+                 for trans in self.__trans.getTransition(start = state):
+                     self.__trans.remove(trans)
+                    
     def remove_state(self,state):
         """remove the state given and the relevant transitions"""
-        if state not in self.__etate:
-            raise excep.StateNotFound("Can not add the starts %s." % state)
+        if state not in self.__etats:
+            raise excep.StateNotFound("Can not remove the starts %s." % state)
         if state == self.__etat_init:
-            warnings.warn('The state is an initial state')
+            warnings.warn("The state '%s' is an initial state" % state)
             self.__etat_init = None
-        if state in self.__etats__final:
-            warnings.warn('The state is a final state')
+        if state in self.__etats_final:
+            warnings.warn("The state '%s' is a final state" % state)
             self.__etats_final.remove(state)
         self.__etats.remove(state)
-        return state
+        for trans in self.__trans.getTransition(start = state):
+            self.__trans.remove(trans)
+        for trans in self.__trans.getTransition(end = state):
+            self.__trans.remove(trans)
         
+        return state
+    
+     
     def import_XML(self,filePath):
         self.clear()
         tree = ET.parse(filePath)
@@ -148,8 +161,8 @@ class Automate(object):
     
     def isDeterministe(self):
         for etat in self.__etats:
-            for alphabet in self.__alphabet:
-                if len(self.__trans.getEtat(etat,alphabet))>1 :
+            for lettre in self.__alphabet:
+                if len(self.__trans.getEtat(etat,lettre))>1 :
                     return False
         return True
     
@@ -187,62 +200,69 @@ class Automate(object):
             for transInSet in videLabelSet:
                 for nextSet in self.__trans.getTransition(start = transInSet[2]):
                     if nextSet[0] in self.__etats_final:
-                        self.__etats_final.remove(nextSet[0])
                         self.__etats_final.add(transInSet[0])
                     self.__trans.put(transInSet[0],nextSet[1],nextSet[2])
                 self.__trans.remove(transInSet)
             videLabelSet = self.__trans.getTransition(symbol = '')  
-        
+         
         self.__alphabet.remove('')
-        
+        self.remove_stateUseless()
     def determiniser(self):
         self.getNFA()
         
         while not self.isDeterministe():
-            continuable = False
-            alphabet = self.__alphabet.copy()
-            etats = self.__etats.copy()
-            
-            for etat in etats:
-                for lettre in alphabet:
-                    newEtat = tuple(self.__trans.getEtat(etat,lettre))
-                    if len(newEtat) < 2:
+            for oldTrans in copy.deepcopy(self.__trans):
+                newEtat = self.__trans.getEtat(oldTrans[0],oldTrans[1])
+                if len(newEtat) < 2:
+                    continue
+                for etat in newEtat.copy():
+                    if isinstance(etat,str):
+                        pass
+                    else:
+                        newEtat.remove(etat)
+                        newEtat = newEtat | set(etat)
+                    if tuple(newEtat) in self.__etats:
                         continue
-                    print(etat,lettre)
-                    print('newEtat:' + str(newEtat))
-                    self.add_state(newEtat
-                            ,final = not set(newEtat).isdisjoint(self.__etats_final)
-                            ,replace = True)
-                    for trans in self.__trans.getTransition(start = newEtat):
-                        print('add transition from new')
-                        print(self.add_transition(newEtat,trans[1],trans[2]))
-                    for trans in self.__trans.getTransition(start = etat,symbol = lettre):
-                        print('remove transition')
-                        print(self.__trans.remove(trans))
-                    print('add transition to new')
-                    print(self.add_transition(start = etat,symbol = lettre,end = newEtat))
-                    continuable = True
-                    break
-            if continuable:
-                break
+                newEtat = tuple(newEtat)
+                if len(newEtat) < 2:
+                    continue
+                self.add_state(newEtat
+                        ,final = not set(newEtat).isdisjoint(self.__etats_final)
+                        ,replace = True)
+                
+                for trans in self.__trans.getTransition(start = oldTrans[0]
+                                                        ,symbol = oldTrans[1]):
+
+                    self.__trans.remove(trans)
+                self.add_transition(start = oldTrans[0]
+                                        ,symbol = oldTrans[1]
+                                        ,end = newEtat)
+
+                for trans in self.__trans.getTransition(start = set(newEtat)):
+                    self.add_transition(newEtat,trans[1],trans[2],replace = True)
+
+                self.remove_stateUseless()
+                
     def minimiser(self):
         self.determiniser()
         
         if not (self.isDeterministe()):
             raise Exception("Automate is not deterministe!")
-        partitionList = [self.__etats_final, self.__etats.difference(self.__etats_final)]
+        partitionList = [self.__etats_final,
+                         self.__etats.difference(self.__etats_final)]
         isDivisable = True
         
         while isDivisable:
             isDivisable = False
             oriLength = len(partitionList)
+            
             for lettre in self.__alphabet:
-                for partition in partitionList:
-                    if len(partition) == 1:
+                for partition in partitionList.copy():    
+                    if len(partition) <= 1:
                         continue
                     maxNumber =  len(partitionList)+1
                     sousSetList = [set() for x in range(maxNumber)] 
-                    
+                
                     for x in partition:    
                             index = self.__findEtat(x,lettre,partitionList)
                             if index ==None:
@@ -251,13 +271,46 @@ class Automate(object):
                                 sousSetList[index].add(x)
                     partitionList.remove(partition)
                     partitionList.extend([x for x in sousSetList if len(x)>0])
-                if oriLength != len(partitionList):
-                    isDivisable = True
-       
-        
+                    if oriLength != len(partitionList):
+                        isDivisable = True               
+                    
+        for partition in partitionList:
+            if len(partition) <2:
+                continue
+            newEtat = partition
+            newState = set()
+            for etat in newEtat:
+                if isinstance(etat,str):
+                    newState.add(etat)
+                else:
+                    newState = newState | set(etat)
+            newState = tuple(newState)
+            
+            if self.__etat_init in partition:
+                self.__etat_init = newState
+            if not self.__etats_final.isdisjoint(newEtat):
+                self.__etats_final.add(newState)
+                self.__etats_final.difference_update(newState)
+            self.__etats.add(newState)
+            for state in partition:
+                self.__etats.remove(state)
+                for trans in self.__trans.getTransition(start = state):
+                    self.__trans.remove(trans)
+                    if trans[2] in partition:
+                        self.__trans.put(newState, trans[1],newState)
+                    else:
+                        self.__trans.put(newState, trans[1],trans[2])
+                for trans in self.__trans.getTransition(end = state):
+                    self.__trans.remove(trans)
+                    if trans[0] in partition:
+                        self.__trans.put(newState, trans[1],newState)
+                    else:
+                        self.__trans.put(trans[0], trans[1],newState)
+                        
+                        
     def __findEtat(self,etat,label,partitionList):
         etatFinal = list(self.__trans.getEtat(etat,label))
-        if etatFinal == []:
+        if len(etatFinal) < 1:
             return None
         for i in range(len(partitionList)-1):
             if etatFinal[0] in partitionList[i]:
@@ -300,7 +353,7 @@ class Automate(object):
         
 automate = Automate()
 
-automate.import_XML('../res/automate1.xml')
+automate.import_XML('../res/automate6.xml')
 print("Origine:" + str(automate))
 automate.getNFA()
 print("NFA:" + str(automate))
