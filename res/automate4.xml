@@ -1,0 +1,30 @@
+<session>
+  <automate id="414">
+    <etats>
+      <etat nom="1" initial="Yes" />
+      <etat nom="2" />
+      <etat nom="3" />
+      <etat nom="4" />
+      <etat nom="5" />
+      <etat nom="6" />
+      <etat nom="7" />
+      <etat nom="8" final = "Yes"/>
+      <etat nom="9" />
+      <etat nom="10" />
+    </etats>
+    <transitions>
+      <trans deb="1" label="" fin="2" />
+      <trans deb="1" label="" fin="6" />
+      <trans deb="2" label="" fin="3" />
+      <trans deb="2" label="" fin="9" />
+      <trans deb="3" label="a" fin="4" />
+      <trans deb="4" label="" fin="5" />
+      <trans deb="5" label="" fin="2" />
+      <trans deb="5" label="" fin="6" />
+      <trans deb="6" label="" fin="7" />
+      <trans deb="7" label="b" fin="8" />
+      <trans deb="9" label="b" fin="10" />
+      <trans deb="10" label="" fin="5" />
+    </transitions>
+  </automate>
+</session>
