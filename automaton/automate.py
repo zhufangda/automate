@@ -37,14 +37,14 @@ class Automate(object):
         self.__trans = trans
             
     def __str__(self):
-        return 'id:' + str(self.__identify) + "\n" \
-              +'Complet:\t' + str(self.isComplet()) + '\n\t' \
-              +'Deterministe:\t' + str(self.isDeterministe()) + '\n\t' \
-              +'etats:\t\t'+ str(self.etats) + "\n\t"  \
-              +'etat_init:\t'+ str(self.etat_init) + "\n\t"  \
-              +'etats_final:\t'+ str(self.etats_final) + "\n\t"  \
-              +'alphabet:\t'+ str(self.alphabet) + '\n\t' \
-              +'trans:\t'+ str(self.trans) + '\n'
+        return 'id:\n\t' + str(self.__identify) + "\n" \
+              +'Complet:\n\t' + str(self.isComplet()) + '\n' \
+              +'Deterministe:\n\t' + str(self.isDeterministe()) + '\n' \
+              +'etats:\n\t'+ str(self.etats) + "\n"  \
+              +'etat_init:\n\t'+ str(self.etat_init) + "\n"  \
+              +'etats_final:\n\t'+ str(self.etats_final) + "\n"  \
+              +'alphabet:\n\t'+ str(self.alphabet) + '\n' \
+              +'trans:\n\t'+ str(self.trans) + '\n'
               
     @property
     def trans(self):
@@ -347,18 +347,5 @@ class Automate(object):
             transition.set('fin',str(trans[2]))
         
         tree = etree.ElementTree(root)
-        tree.write('export.xml', pretty_print=True,
+        tree.write(pathFile, pretty_print=True,
                xml_declaration=True, encoding='UTF-8')
-
-        
-automate = Automate()
-
-automate.import_XML('../res/automate6.xml')
-print("Origine:" + str(automate))
-automate.getNFA()
-print("NFA:" + str(automate))
-automate.determiniser()
-print("Determiniser" + str(automate))    
-automate.minimiser()
-print("Minimiser:" + str(automate))
-automate.export_XML('helo')

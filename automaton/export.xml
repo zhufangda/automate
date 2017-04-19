@@ -3,16 +3,16 @@
   <automate id="44">
     <etats>
       <etat initial="Yes" nom="0"/>
-      <etat final="Yes" nom="('3', '2')"/>
       <etat nom="1"/>
+      <etat final="Yes" nom="('3', '2')"/>
     </etats>
     <transitions>
-      <trans deb="1" label="a" fin="('3', '2')"/>
+      <trans deb="1" label="b" fin="1"/>
       <trans deb="0" label="b" fin="0"/>
       <trans deb="('3', '2')" label="a" fin="0"/>
       <trans deb="('3', '2')" label="b" fin="('3', '2')"/>
-      <trans deb="1" label="b" fin="1"/>
       <trans deb="0" label="a" fin="1"/>
+      <trans deb="1" label="a" fin="('3', '2')"/>
     </transitions>
   </automate>
 </session>
