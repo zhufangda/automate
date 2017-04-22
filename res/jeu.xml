@@ -1,0 +1,112 @@
+<session>
+  <automate id="ma01">
+    <etats>
+      <etat nom="0" initial="Yes" />
+      <etat nom="1" />
+      <etat nom="2" />
+      <etat nom="3" final="Yes" />
+      <etat nom="4" />
+      <etat nom="5" final="Yes" />
+    </etats>
+    <transitions>
+      <trans deb="0" fin="1" label="a" />
+      <trans deb="1" label="a" fin="3" />
+      <trans deb="3" label="a" fin="3" />
+      <trans deb="2" label="b" fin="1" />
+      <trans deb="0" label="c" fin="2" />
+      <trans deb="2" label="c" fin="4" />
+      <trans deb="3" label="b" fin="5" />
+      <trans deb="3" label="" fin="2" />
+      <trans deb="4" label="a" fin="4" />
+      <trans deb="4" label="b" fin="5" />
+    </transitions>
+  </automate>
+  <automate id="ma02">
+    <etats>
+      <etat nom="0" />
+      <etat nom="1" initial="Yes"/>
+      <etat nom="2" />
+      <etat nom="3" />
+      <etat nom="4" />
+      <etat nom="5" final="Yes" />
+    </etats>
+    <transitions>
+      <trans deb="0" fin="1" label="b" />
+      <trans deb="1" label="b" fin="3" />
+      <trans deb="3" label="c" fin="3" />
+      <trans deb="2" label="a" fin="1" />
+      <trans deb="0" label="" fin="2" />
+      <trans deb="2" label="" fin="4" />
+      <trans deb="3" label="a" fin="5" />
+      <trans deb="3" label="b" fin="2" />
+      <trans deb="4" label="c" fin="4" />
+      <trans deb="4" label="b" fin="5" />
+    </transitions>
+  </automate>
+  <automate id="iroba">
+    <etats>
+      <etat nom="s1" initial="Yes"/>
+      <etat nom="s2" />
+      <etat nom="s3" />
+      <etat nom="s4" />
+      <etat nom="s5" final="Yes" />
+      <etat nom="s6" />
+      <etat nom="s7" />
+      <etat nom="s8" />
+    </etats>
+    <transitions>
+      <trans deb="s1" label="a" fin="s2" />
+      <trans deb="s2" label="b" fin="s3" />
+      <trans deb="s3" label="r" fin="s4" />
+      <trans deb="s4" label="i" fin="s5" />
+      <trans deb="s1" label="a" fin="s6" />
+      <trans deb="s6" label="b" fin="s7" />
+      <trans deb="s7" label="o" fin="s8" />
+      <trans deb="s8" label="i" fin="s5" />
+    </transitions>
+  </automate>
+  <automate id="isme">
+    <etats>
+      <etat nom="1" initial="Yes"/>
+      <etat nom="2" />
+      <etat nom="3" />
+      <etat nom="4" final="Yes" />
+      <etat nom="5" />
+      <etat nom="6" />
+    </etats>
+    <transitions>
+      <trans deb="1" label="b" fin="1" />
+      <trans deb="1" label="a" fin="2" />
+      <trans deb="1" label="c" fin="5" />
+      <trans deb="2" label="c" fin="3" />
+      <trans deb="3" label="c" fin="3" />
+	  <trans deb="3" label="a" fin="4" />
+	  <trans deb="5" label="a" fin="6" />
+	  <trans deb="6" label="c" fin="3" />
+    </transitions>
+  </automate>
+  <automate id="eigne">
+    <etats>
+      <etat nom="1" initial="Yes"/>
+      <etat nom="2" />
+      <etat nom="3" final="Yes" />
+      <etat nom="4" />
+      <etat nom="5" final="Yes" />
+      <etat nom="6" />
+      <etat nom="7" final="Yes" />
+      <etat nom="8" />
+      <etat nom="9" />
+    </etats>
+    <transitions>
+      <trans deb="1" label="a" fin="2" />
+      <trans deb="1" label="b" fin="4" />
+      <trans deb="1" label="c" fin="6" />
+      <trans deb="2" label="c" fin="3" />
+      <trans deb="4" label="c" fin="5" />
+	  <trans deb="6" label="c" fin="7" />
+	  <trans deb="6" label="a" fin="8" />
+	  <trans deb="8" label="b" fin="9" />
+	  <trans deb="9" label="c" fin="6" />
+    </transitions>
+  </automate>
+</session>
