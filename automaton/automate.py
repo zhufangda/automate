@@ -67,7 +67,7 @@ class Automate(object):
     
         Args:
             start: the intial state.
-            symbol: a lettre of transition.
+            symbol: a letter of transition.
             end: the final state.
             replace: If it is false, an exception will raise 
                      when users try to add an exisent transition.
@@ -310,7 +310,7 @@ class Automate(object):
                 self.remove_stateUseless()
                 
     def minimiser(self):
-        """ """
+        """Trun a deterministic finite complete automaton into minimal AFDC"""
         self.determiniser()
         
         if not (self.isDeterministe()):
@@ -393,6 +393,7 @@ class Automate(object):
         self.__trans.clear()
     
     def export_XML(self,pathFile):
+        """Store the present automaton in a file of XML"""
         root = etree.Element('session')
         automate = etree.SubElement(root,'automate')
         automate.set('id',self.__identify)
