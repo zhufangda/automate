@@ -13,7 +13,7 @@ class Transition(object):
         """Put a transition in the list of transitions.
         Args:
             etatSrc:initial state 
-            label: lettre
+            label: letter
             etatDest: final state
         """
         self.__application.add((etatSrc,label,etatDest))
@@ -32,7 +32,7 @@ class Transition(object):
         """ get end state by the start state and the symbole.
         Args:
             etatSrc:initial state 
-            label: lettre
+            label: letter
         Returns:
             the set of final state
         """
