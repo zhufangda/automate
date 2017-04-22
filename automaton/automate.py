@@ -211,7 +211,7 @@ class Automate(object):
         return True
     
     def isDeterministe(self):
-		"""Check if the automaton is deterministe.
+        """Check if the automaton is deterministe.
     
         Returns:
             True if the automaton is deterministe, False if not.
@@ -441,10 +441,3 @@ def openXML(filePath):
         automateList.append(copy.deepcopy(automate))
         automate.clear()
     return automateList
-
-
-
-x = openXML("/home/zhufangda/IdeaProjects/automate/res/automateAll.xml")        
-for m in x:
-    print(m)        
-        

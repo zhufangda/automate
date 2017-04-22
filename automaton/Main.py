@@ -1,18 +1,13 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
-
 import sys
 from PyQt5 import QtGui
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import (QMainWindow, QTextEdit,QLabel,
     QAction, QFileDialog, QApplication,QDialog,QGridLayout,
     QLineEdit,QSpinBox,QDialogButtonBox,QSizePolicy,QVBoxLayout,QSpacerItem)
-from PyQt5.QtGui import QIcon,QListWidget
-
+from PyQt5.QtGui import QIcon
 
 from automate import Automate
-
+import automate
 
 class WindowsFrame(QMainWindow):
 
@@ -27,14 +22,13 @@ class WindowsFrame(QMainWindow):
         self.textEdit.setReadOnly(True)
         self.setCentralWidget(self.textEdit)
         self.statusBar()
-        self.listWidget = QListWidget()
         
         reconnuAction = QAction(QIcon('reconnu.png'),'&Reconnaitre',self)
         reconnuAction.setShortcut('Ctrl+R')
         reconnuAction.setStatusTip('Reconnaire une texte')
         reconnuAction.triggered.connect(self.reconnu)
         
-        epsilonAction = QAction(QIcon('epsilon.png'),'&Determiniser',self)
+        epsilonAction = QAction(QIcon('epsilon.png'),'&Remove Epsilon TranSition',self)
         epsilonAction.setShortcut('Ctrl+E')
         epsilonAction.setStatusTip('Enlever les transitions spontanées')
         epsilonAction.triggered.connect(self.epsilon)
@@ -89,7 +83,7 @@ class WindowsFrame(QMainWindow):
 
         
         if fname[0]:
-            self.automateList = automate.
+            self.automate = automate.openXML(fname[0])[0]
             self.textEdit.setText(self.automate.__str__())
 
     def showSaveDialog(self):
@@ -132,10 +126,10 @@ class Dialog(QDialog):
         self.leName = QLineEdit(parent=self)
         grid.addWidget(self.leName, 0, 1, 1, 1)
     
-        grid.addWidget(QLabel(u'年龄', parent=self), 1, 0, 1, 1)
+        grid.addWidget(QLabel(u'resultat:', parent=self), 1, 0, 1, 1)
     
-        self.sbAge = QSpinBox(parent=self)
-        grid.addWidget(self.sbAge, 1, 1, 1, 1)
+        self.resultat = QLabel(u'True',parent=self)
+        grid.addWidget(self.resultat, 1, 1, 1, 1)
         buttonBox = QDialogButtonBox(parent=self)
         buttonBox.setOrientation(QtCore.Qt.Horizontal) # 设置为水平方向
         buttonBox.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)
@@ -164,10 +158,9 @@ class Dialog(QDialog):
         return self.sbAge.value()
 
 
-    
-    
 
 if __name__ == '__main__':
+
     app = QApplication(sys.argv)
     ex = WindowsFrame()
     sys.exit(app.exec_())
