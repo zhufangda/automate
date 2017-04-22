@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Sat Apr  8 15:06:26 2017
 
-@author: zhufangda
-"""
 
 import unittest
 import transition

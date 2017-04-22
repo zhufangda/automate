@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Sun Apr  9 23:07:36 2017
 
-@author: WANG Huan
-"""
 
 import sys
 from PyQt5 import QtGui

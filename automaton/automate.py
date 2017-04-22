@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Thu Apr  6 15:41:46 2017
 
-@author: WANG Huan
-"""
 
 import xml.etree.ElementTree as ET
 from xml.dom.minidom import Document
@@ -67,19 +63,35 @@ class Automate(object):
         return self.__alphabet
     
     def add_transition(self, start, symbol, end, replace = False):
-        """add a given state to the automaton"""
+        """Adds a given transititon to the automaton.
+    
+        Args:
+            start: the intial state.
+            symbol: a lettre of transition.
+            end: the final state.
+            replace: If it is false, an exception will raise 
+                     when users try to add an exisent transition.
+                     If it is true, there is no exception 
+                     when users intend to add an existent transition
+        Returns:
+            a tuple that represents the transition added:(intial state,lettre,final state).  
+        Raises:
+            StateNotFound: An error occurred when the state donated by arguments is not in state list.
+            SymbolNotFound:An error occurred when the symbol donated by arguments is not in symbol list.
+            Duplicate:An error occurred when replace is false and this transition already exists.
+        """        
         if start not in self.__etats:
             raise excep.StateNotFound("Can not add a transition ('%s','%s','%s')"
-                                " because starts in a undefined start state '%s'"
+                                " because starts '%s' is undefined"
                                 % (start,symbol, end,start))
         if end not in self.__etats:
-            raise excep.StateNotFound("Can not add a transition on lettre '%s' that"
-                                " starts in a undefined end state '%s'"
-                                % (symbol, end))
+            raise excep.StateNotFound("Can not add a transition ('%s','%s','%s')"
+                                " because end '%s' is undefined"
+                                % (start,symbol, end,end))
         if symbol not in self.__alphabet:
-             raise excep.SymbolNotFound("Can not add a transition on lettre '%s' that"
-                                " starts in a undefined end state '%s'"
-                                % (symbol, end))
+             raise excep.SymbolNotFound("Can not add a transition ('%s','%s','%s')"
+                                "on lettre '%s' because that symbol is undefined"
+                                % (start,symbol, end,symbol))
         if (start,symbol,end) in self.__trans and replace == False:
             raise excep.Duplicate("Cannot add transition ("
                                      " '%s'because this transition already exists."
@@ -89,7 +101,21 @@ class Automate(object):
         return (start,symbol,end)
         
     def add_state(self,state,final = False,init = False, replace = False):
-        """Adds a given state to the automaton."""
+        """Adds a given state to the automaton.
+    
+        Args:
+            state: the state that will be added.
+            final: True if it is final state, False if not.
+            init: True if it is initial state, False if not.
+            replace: If it is false, an exception will raise 
+                     when users try to add an exisent transition.
+                     If it is true, there is no exception 
+                     when users intend to add an existent transition
+        Returns:
+            the state that is added..  
+        Raises:
+            Duplicate:An error occurred when replace is false and this transition already exists.
+        """        
         if state in self.__etats and not replace:
             raise excep.Duplicate("State '%s' already defined" % str(state))
         if init :
@@ -106,10 +132,19 @@ class Automate(object):
         return state
         
     def add_symbol(self,symbol):
-        """add a given symbol to the automaton"""
+        """Adds a given letter to the automaton.
+    
+        Args:
+            symbol: a given letter.    
+        Returns:
+            the symbol that is added.
+        """       
         self.__alphabet.add(symbol)
         return symbol 
     def remove_stateUseless(self):
+        """Removes a state that is neither initial state,nor final state of an automaton
+           but it is only final state of some transitions.
+        """       
         for state in list(self.__etats):
             if state != self.__etat_init and len(self.__trans.getTransition(end = state))<1:
                  self.remove_state(state)
@@ -117,7 +152,14 @@ class Automate(object):
                      self.__trans.remove(trans)
                     
     def remove_state(self,state):
-        """remove the state given and the relevant transitions"""
+        """Removes the state given and the relevant transitions.
+        Args:
+            state:the state that will be removed.    
+        Returns:
+            the state that is removed.
+        Raises:
+            StateNotFound: An error occurred when the state donated by arguments is not in state list.
+        """       
         if state not in self.__etats:
             raise excep.StateNotFound("Can not remove the starts %s." % state)
         if state == self.__etat_init:
@@ -136,6 +178,10 @@ class Automate(object):
     
      
     def import_XML(self,filePath):
+        """import un file of XML.
+        Args:
+            filePath: the path of the file XML.
+        """ 
         self.clear()
         tree = ET.parse(filePath)
         root = tree.getroot()
@@ -153,6 +199,11 @@ class Automate(object):
                                 trans.attrib['fin'])
             
     def isComplet(self):
+        """check if the automaton is complet.
+    
+        Returns:
+            True if the automaton is complet, False if not.
+        """        
         for etat in self.__etats:
             for alphabet in self.__alphabet:
                 if self.__trans.getEtat(etat,alphabet) == set() :
@@ -160,6 +211,11 @@ class Automate(object):
         return True
     
     def isDeterministe(self):
+         """check if the automaton is deterministe.
+    
+        Returns:
+            True if the automaton is deterministe, False if not.
+        """        
         for etat in self.__etats:
             for lettre in self.__alphabet:
                 if len(self.__trans.getEtat(etat,lettre))>1 :
@@ -167,6 +223,12 @@ class Automate(object):
         return True
     
     def isReconnu(self, mot):
+        """check if the word given can be recognized by the automaton.
+        Args:
+            the word given.
+        Returns:
+            the word given and the initial state.
+        """        
         q = self.__etat_init
         
         def reconnu(mot,q):
@@ -191,6 +253,8 @@ class Automate(object):
         return reconnu(mot,q)
 
     def getNFA(self):
+        """Delete the empty transition and get the nondeterministic finite automaton."""
+        
         if not '' in self.__alphabet:
             return 
         
@@ -207,7 +271,9 @@ class Automate(object):
          
         self.__alphabet.remove('')
         self.remove_stateUseless()
+        
     def determiniser(self):
+        """Trun a nondeterministic finite automaton into a deterministic finite automaton"""
         self.getNFA()
         
         while not self.isDeterministe():
@@ -244,6 +310,7 @@ class Automate(object):
                 self.remove_stateUseless()
                 
     def minimiser(self):
+        """ """
         self.determiniser()
         
         if not (self.isDeterministe()):

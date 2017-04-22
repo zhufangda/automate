@@ -1,10 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Thu Apr  6 18:56:27 2017
 
-@author: WANG Huan
-"""
+
 from collections import Iterable  
 
 class Transition(object):
@@ -13,18 +10,43 @@ class Transition(object):
         self.__application =application
     
     def put(self,etatSrc,label,etatDest):
+        """Put a transition in the list of transitions.
+        Args:
+            etatSrc:initial state 
+            label: lettre
+            etatDest: final state
+        """
         self.__application.add((etatSrc,label,etatDest))
     
     def remove(self,trans):
+        """Remove a transition.
+        Args:
+            a transition given
+        Returns:
+             a transition removed
+        """
         self.__application.remove(trans)
         return trans
         
     def getEtat(self,etatSrc,label):
-        """ get end state by the start state and the symbole """
+        """ get end state by the start state and the symbole.
+        Args:
+            etatSrc:initial state 
+            label: lettre
+        Returns:
+            the set of final state
+        """
         return set([x[2] for x in self.__application if etatSrc==x[0] and label==x[1]])
                  
     def getTransition(self,start=None,symbol=None,end = None):
-        """ get end state by the given arguments """
+        """ get the transition by the given arguments.
+        Args:
+            start: initial state 
+            symbol: lettre
+            end: final state
+        Returns:
+            the set of transitions related to the given arguments.
+        """
         if start == None:
             startSet = self.__application.copy()
         elif isinstance(start, set):
@@ -55,8 +77,11 @@ class Transition(object):
         
     
     def removeTransitionByState(self,state):
-        """remove all the transition releving the state given.
-        return all the transition removed
+        """remove all the transition related to the state given.
+        Args:
+            a state given
+        Returns: 
+            the tuple of all the transition removed.
         """
         list = []
         for element in self.__application.copy():
@@ -66,6 +91,14 @@ class Transition(object):
         return tuple(list)
 
     def exist(self,start,symbol,end):
+        """Check if the transition given exist.
+        Args:
+            start: initial state 
+            symbol: lettre
+            end: final state
+        Returns:
+            True,if the transition given exist,False, if not.
+        """
         return (start,symbol,end) in self.__application
     
     def __str__(self):
