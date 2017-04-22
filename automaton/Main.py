@@ -8,7 +8,8 @@ from PyQt5 import QtCore
 from PyQt5.QtWidgets import (QMainWindow, QTextEdit,QLabel,
     QAction, QFileDialog, QApplication,QDialog,QGridLayout,
     QLineEdit,QSpinBox,QDialogButtonBox,QSizePolicy,QVBoxLayout,QSpacerItem)
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon,QListWidget
+
 
 from automate import Automate
 
@@ -26,6 +27,7 @@ class WindowsFrame(QMainWindow):
         self.textEdit.setReadOnly(True)
         self.setCentralWidget(self.textEdit)
         self.statusBar()
+        self.listWidget = QListWidget()
         
         reconnuAction = QAction(QIcon('reconnu.png'),'&Reconnaitre',self)
         reconnuAction.setShortcut('Ctrl+R')
@@ -87,7 +89,7 @@ class WindowsFrame(QMainWindow):
 
         
         if fname[0]:
-            self.automate.import_XML(fname[0])
+            self.automateList = automate.
             self.textEdit.setText(self.automate.__str__())
 
     def showSaveDialog(self):
@@ -162,9 +164,10 @@ class Dialog(QDialog):
         return self.sbAge.value()
 
 
+    
+    
 
 if __name__ == '__main__':
-
     app = QApplication(sys.argv)
     ex = WindowsFrame()
     sys.exit(app.exec_())

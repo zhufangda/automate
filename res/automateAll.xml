@@ -1,0 +1,50 @@
+<session>
+  <automate id="ma08">
+    <etats>
+      <etat nom="0" initial="Yes" />
+      <etat nom="1" />
+      <etat nom="2" final = "Yes"/>
+    </etats>
+    <transitions>
+      <trans deb="0" label="a" fin="0" />
+      <trans deb="0" label="" fin="1" />
+      <trans deb="1" label="b" fin="1" />
+      <trans deb="1" label="" fin="2" />
+      <trans deb="2" label="c" fin="2" />
+    </transitions>
+  </automate>
+  <automate id="44">
+    <etats>
+      <etat nom="0" initial="Yes" />
+      <etat nom="1" />
+      <etat nom="2" final="Yes"/>
+      <etat nom="3" final="Yes" />
+    </etats>
+    <transitions>
+      <trans deb="0" label="a" fin="1" />
+      <trans deb="0" label="b" fin="0" />
+      <trans deb="1" label="b" fin="1" />
+      <trans deb="1" label="a" fin="2" />
+      <trans deb="2" label="a" fin="0" />
+      <trans deb="2" label="b" fin="3" />
+      <trans deb="3" label="a" fin="0" />
+      <trans deb="3" label="b" fin="3" />
+    </transitions>
+  </automate>
+  <automate id="ma01">
+    <etats>
+      <etat nom="1" initial="Yes" />
+      <etat nom="2" />
+      <etat nom="3" />
+      <etat nom="4" final="Yes" />
+    </etats>
+    <transitions>
+      <trans deb="1" label="a" fin="2" />
+      <trans deb="1" label="a" fin="3" />
+      <trans deb="2" label="a" fin="4" />
+      <trans deb="3" label="a" fin="3" />
+      <trans deb="3" label="b" fin="4" />
+      <trans deb="4" label="b" fin="2" />
+    </transitions>
+  </automate>
+</session>

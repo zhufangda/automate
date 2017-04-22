@@ -39,7 +39,7 @@ class Automate(object):
               +'etats:\n\t'+ str(self.etats) + "\n"  \
               +'etat_init:\n\t'+ str(self.etat_init) + "\n"  \
               +'etats_final:\n\t'+ str(self.etats_final) + "\n"  \
-              +'alphabet:\n\t'+ str(self.alphabet) + '\n' \
+              +'alphabet:\n\t'+ str(self.__alphabet) + '\n' \
               +'trans:\n\t'+ str(self.trans) + '\n'
               
     @property
@@ -59,8 +59,11 @@ class Automate(object):
         return self.__etats_final
     
     @property
-    def alphabet(self):
-        return self.__alphabet
+    def identify(self):
+        return self.__identify
+    @identify.setter
+    def identify(self,identify):
+        self.__identify = identify
     
     def add_transition(self, start, symbol, end, replace = False):
         """Adds a given transititon to the automaton.
@@ -177,26 +180,23 @@ class Automate(object):
         return state
     
      
-    def import_XML(self,filePath):
+    def import_Automate(self,child):
         """import un file of XML.
         Args:
-            filePath: the path of the file XML.
+            filePavth: the path of the file XML.
         """ 
-        self.clear()
-        tree = ET.parse(filePath)
-        root = tree.getroot()
-        self.__identify = tree.find("automate").attrib['id']
-        for etat in root.iter('etat'):
-            self.add_state(etat.attrib['nom'],
+        self.__identify =child.attrib["id"]
+        for etat in child.iter('etat'):
+            x = self.add_state(etat.attrib['nom'],
                            final = 'final' in etat.attrib 
                                        and etat.attrib['final'] == 'Yes',
                            init = 'initial' in etat.attrib
                                        and etat.attrib['initial'] == 'Yes')
-        for trans in root.iter('trans'):
+        for trans in child.iter('trans'):
             self.add_symbol(trans.attrib['label'])
             self.add_transition(trans.attrib['deb'],
-                                trans.attrib['label'],
-                                trans.attrib['fin'])
+                                trans.attrib['label'],      
+                          trans.attrib['fin'])
             
     def isComplet(self):
         """Check if the automaton is complet.
@@ -211,11 +211,11 @@ class Automate(object):
         return True
     
     def isDeterministe(self):
-        """Check if the automaton is deterministe.
+		"""Check if the automaton is deterministe.
     
         Returns:
             True if the automaton is deterministe, False if not.
-        """        
+        """
         for etat in self.__etats:
             for lettre in self.__alphabet:
                 if len(self.__trans.getEtat(etat,lettre))>1 :
@@ -417,3 +417,34 @@ class Automate(object):
         tree = etree.ElementTree(root)
         tree.write(pathFile, pretty_print=True,
                xml_declaration=True, encoding='UTF-8')
+
+
+def openXML(filePath):
+    tree = ET.parse(filePath)
+    root = tree.getroot()
+    automateList = []
+    for child in root.iter('automate'):
+        automate = Automate()
+        automate.identify = child.attrib["id"]
+        for etat in child.iter('etat'):
+            automate.add_state(etat.attrib['nom'],
+                           final = 'final' in etat.attrib 
+                                       and etat.attrib['final'] == 'Yes',
+                           init = 'initial' in etat.attrib
+                                       and etat.attrib['initial'] == 'Yes')
+        for trans in child.iter('trans'):
+            automate.add_symbol(trans.attrib['label'])
+            automate.add_transition(trans.attrib['deb'],
+                                trans.attrib['label'],      
+                          trans.attrib['fin'])
+            
+        automateList.append(copy.deepcopy(automate))
+        automate.clear()
+    return automateList
+
+
+
+x = openXML("/home/zhufangda/IdeaProjects/automate/res/automateAll.xml")        
+for m in x:
+    print(m)        
+        
