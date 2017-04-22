@@ -137,7 +137,7 @@ class Automate(object):
         Args:
             symbol: a given letter.    
         Returns:
-            the symbol that is added.
+            the letter that is added.
         """       
         self.__alphabet.add(symbol)
         return symbol 
@@ -199,7 +199,7 @@ class Automate(object):
                                 trans.attrib['fin'])
             
     def isComplet(self):
-        """check if the automaton is complet.
+        """Check if the automaton is complet.
     
         Returns:
             True if the automaton is complet, False if not.
@@ -211,7 +211,7 @@ class Automate(object):
         return True
     
     def isDeterministe(self):
-         """check if the automaton is deterministe.
+        """Check if the automaton is deterministe.
     
         Returns:
             True if the automaton is deterministe, False if not.
@@ -223,11 +223,11 @@ class Automate(object):
         return True
     
     def isReconnu(self, mot):
-        """check if the word given can be recognized by the automaton.
+        """Check if the word given can be recognized by the automaton.
         Args:
             the word given.
         Returns:
-            the word given and the initial state.
+            True,if the word given can be recognized, False, if not.
         """        
         q = self.__etat_init
         
